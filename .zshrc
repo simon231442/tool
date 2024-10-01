@@ -63,7 +63,7 @@ create_c_file() {
     echo "/*                                                        :::      ::::::::   */" >> "$1"
     printf "/*   %-50s :+:      :+:    :+:   */\n" $1 >> "$1"
     echo "/*                                                    +:+ +:+         +:+     */" >> "$1"
-    echo "/*   By: srenaud <simon2314@hotmail.com>            +#+  +:+       +#+        */" >> "$1"
+    echo "/*   By: srenaud <srenaud@student.42lausanne.ch>    +#+  +:+       +#+        */" >> "$1"
     echo "/*                                                +#+#+#+#+#+   +#+           */" >> "$1"
     echo "/*   Created: $(date +'%Y/%m/%d %H:%M:%S') by srenaud           #+#    #+#             */" >> "$1"
     echo "/*   Updated: $(date +'%Y/%m/%d %H:%M:%S') by srenaud          ###   ########.fr       */" >> "$1"
