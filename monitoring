@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Gather information
+arch=$(uname -m)
+ker=$(uname -r)
+pp=$(lscpu | grep "^CPU(s)" | awk '{print $2}')
+vp=$(nproc)
+mr=$(free | grep Mem | awk '{printf"%d/%dMB (%.1f%%)", $3/1000, $2/1000, $3/$2*100}')
+md=$(df --total | grep total | awk '{printf "%.1f/%.1fGB (%.1f%%)", $3/1000000, $2/1000000>
+rcpu=$(top -bn1 | grep "Cpu(s)" | awk '{printf "%.1f%%", $2 + $4}')
+lb=$(who -b | awk '{print $3, $4}')
+lvm=$(lsblk | grep -q LVM && echo "Yes" || echo "No")
+ct=$(ss -Ht | wc -l)
+ul=$(who | awk '{print $1}' | sort -u | wc -l)
+ip=$(hostname -I | awk '{print $1}')
+mac=$(ip link | grep ether | awk '{print $2}')
+cmds=$(journalctl _COMM=sudo | grep COMMAND | wc -l)
+
+# Display output with enhanced formatting
+wall << EOF
++-----------------------------------+
+|          SYSTEM REPORT            |
++-----------------------------------+
+
+[ SYSTEM INFORMATION ]
+  - Architecture:      $arch
+  - Kernel Version:    $ker
+  - Last Boot:         $lb
+  - LVM Use:           $lvm
+
+[ CPU INFORMATION ]
+  - Physical CPUs:     $pp
+  - Virtual CPUs:      $vp
+  - CPU Load:          $rcpu
+
+[ MEMORY & STORAGE ]
+  - Memory Usage:      $mr
+  - Disk Usage:        $md
+
+[ NETWORK ]
+  - IP Address:        $ip
+  - MAC Address:       $mac
+  - TCP Connections:   $ct ESTABLISHED
+
+[ USER ACTIVITY ]
+  - Logged-in Users:   $ul
+  - Sudo Commands:     $cmds
+
++-----------------------------------+
+EOF
+
+
