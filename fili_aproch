@@ -1,0 +1,14 @@
+int res;                                int res
+int foo(int x, int *error)                      -----> int foo(int *res, int x);
+{                                       {
+        return (x + 1);                 *res = x + 1;
+                                                return (0);
+}                                       }
+
+res = foo(11);                          if (foo(&res, 11) != 0)
+                                                abort
+if (error) abort
+
+char *str;                              char *str;
+char *foo(int x, int y);        ----> void foo(char **dst, int x, int y);
+str = foo(23, 22);                              foo(&str, x, y)
