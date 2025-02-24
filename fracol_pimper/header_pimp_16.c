@@ -13,16 +13,20 @@ void create_styled_c_file(const char *filename) {
     struct tm *t = localtime(&now);
 
     fprintf(file, "/* ************************************************************************** */\n");
-    fprintf(file, "/*                                                                            */\n");
+    fprintf(file, "/*             '                                                              */\n");  
+    fprintf(file, "/*        *          .                                                        */\n");  
+    fprintf(file, "/*               *       '                                                    */\n");  
+    fprintf(file, "/*          *                *                                                */\n");  
+    fprintf(file, "/*                                                                            */\n");  
     fprintf(file, "/*                                                           *                */\n");
-    fprintf(file, "/*                                                          * *               */\n");
+    fprintf(file, "/*                        vers le 42 et au-dela             * *               */\n");
     fprintf(file, "/*                                                         *   *              */\n");
-    fprintf(file, "/*                                                        * * * *             */\n");
-    fprintf(file, "/*                                                       *       *            */\n");
-    fprintf(file, "/*                                                      * *     * *           */\n");
-    fprintf(file, "/*                                                     *   *   *   *          */\n");
-    fprintf(file, "/*                                                    * * * * * * * *         */\n");
-    fprintf(file, "/*                                                   *               *        */\n");
+    fprintf(file, "/* *   '*                                                 * * * *             */\n");
+    fprintf(file, "/*         *                                             *       *            */\n");
+    fprintf(file, "/*              *                                       * *     * *           */\n");
+    fprintf(file, "/*                      *                              *   *   *   *          */\n");
+    fprintf(file, "/*             *                                      * * * * * * * *         */\n");
+    fprintf(file, "/*                    *                              *               *        */\n");
     fprintf(file, "/*                                                  * *             * *       */\n");
     fprintf(file, "/*   %-45s *   *           *   *      */\n", filename);
     fprintf(file, "/*                                                * * * *         * * * *     */\n");
