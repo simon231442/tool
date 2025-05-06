@@ -24,7 +24,7 @@ void create_styled_c_file(const char *filename) {
         fprintf(stderr, "Erreur: Impossible de créer le fichier %s.\n", filename);
         return;
     }
-    generate_sierpinski_triangle(file, 32);
+    generate_sierpinski_triangle(file, 1024);
     fclose(file);
 }
 int main(int argc, char *argv[]) {
