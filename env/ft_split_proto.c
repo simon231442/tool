@@ -12,13 +12,6 @@
 
 #include "libft.h"
 
-/* Function Prototypes */
-char	**ft_split(char const *s, char c);
-static size_t	ft_count_word(const char *s, char c);
-static char	**ft_free_malloc(char **split, unsigned int *start, size_t *len);
-static void	start_len(unsigned int *start, size_t *len, const char *s, char c);
-char	**al_fi_sp(char const *s, unsigned int *start, size_t *len, size_t size);
-
 char	**ft_split(char const *s, char c)
 {
 	char			**split;

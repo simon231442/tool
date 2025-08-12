@@ -17,7 +17,7 @@ fi
 # Create a temporary file for prototypes
 tmpfile=$(mktemp)
 
-# Find function declarations using awk
+# Find function declarations using awk - simple version without formatting
 awk '
 BEGIN { in_comment = 0; in_function = 0; prototype_count = 0; }
 
@@ -30,8 +30,11 @@ BEGIN { in_comment = 0; in_function = 0; prototype_count = 0; }
 /^[a-zA-Z_][a-zA-Z0-9_\*\t ]+[a-zA-Z0-9_\*]+\([^;]*$/ {
     if ($0 ~ /\{/) {
         # Function definition on a single line with opening brace
-        gsub(/\{.*$/, "", $0);
-        print $0 ";";
+        func_def = $0;
+        gsub(/\{.*$/, "", func_def);
+        # Remove trailing spaces before adding semicolon
+        gsub(/[ \t]+$/, "", func_def);
+        print func_def ";";
         prototype_count++;
     } else {
         # Function definition might span multiple lines
@@ -47,6 +50,7 @@ in_function && !/^\t/ {
     if ($0 ~ /\{/) {
         in_function = 0;
         gsub(/\{.*$/, "", func_def);
+        gsub(/[ \t]+$/, "", func_def);
         print func_def ";";
         prototype_count++;
     }
@@ -62,20 +66,45 @@ END {
 
 # Check if any prototypes were found
 if [ -s "$tmpfile" ]; then
-    # Create another temporary file for the new content
+    # Create temporary files for different sections of the file
+    before_include=$(mktemp)
+    after_include=$(mktemp)
     finalfile=$(mktemp)
     
-    # Add header comment for prototypes
-    echo "/* Function Prototypes */" > "$finalfile"
-    cat "$tmpfile" >> "$finalfile"
-    echo "" >> "$finalfile"
+    # Find the last #include line's line number
+    last_include_line=$(grep -n "#include" "$FILE" | tail -1 | cut -d':' -f1)
     
-    # Add original file content
-    cat "$FILE" >> "$finalfile"
+    if [ -n "$last_include_line" ]; then
+        # Split the file at the last #include line
+        head -n "$last_include_line" "$FILE" > "$before_include"
+        tail -n +$((last_include_line + 1)) "$FILE" > "$after_include"
+        
+        # Remove leading empty lines from after_include
+        sed_after=$(mktemp)
+        sed '/./,$!d' "$after_include" > "$sed_after"
+        
+        # Construct the final file
+        cat "$before_include" > "$finalfile"
+        echo "" >> "$finalfile"  # Add empty line after includes
+        echo "/* Function Prototypes */" >> "$finalfile"
+        cat "$tmpfile" >> "$finalfile"
+        echo "" >> "$finalfile"  # Add exactly one empty line after prototypes
+        cat "$sed_after" >> "$finalfile"
+        rm "$sed_after"
+    else
+        # If no #include is found, add prototypes at the beginning
+        echo "/* Function Prototypes */" > "$finalfile"
+        cat "$tmpfile" >> "$finalfile"
+        echo "" >> "$finalfile" # Add exactly one empty line
+        cat "$FILE" >> "$finalfile"
+    fi
     
     # Replace the original file
     mv "$finalfile" "$FILE"
-    echo "Prototypes added successfully to '$FILE'."
+    echo "Prototypes added successfully after includes in '$FILE'."
+    
+    # Clean up temp files
+    rm "$before_include" "$after_include"
 else
     echo "No functions found to generate prototypes."
     rm "$tmpfile"
